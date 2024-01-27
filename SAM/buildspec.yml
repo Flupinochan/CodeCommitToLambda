@@ -1,0 +1,30 @@
+version: 0.2
+
+env:
+  variables:
+    # CloudFormation StackName
+    StackName: "sam-stack"
+# About Lambda Layer.
+# The requirements.txt should be placed within the Layer.
+# https://docs.aws.amazon.com/ja_jp/lambda/latest/dg/packaging-layers.html#packaging-layers-paths
+# https://qiita.com/hayao_k/items/f8c7ad5e35e29d590957#%E7%B0%A1%E5%8D%98%E3%81%AA%E4%BE%8B
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+  pre_build:
+    commands:
+      - AccountID=$(aws sts get-caller-identity --query Account --output text)
+      - S3BucketName="${AccountID}-${StackName}-sam"
+  build:
+    commands:
+      - python -m venv myenv
+      - source myenv/bin/activate
+      - mkdir -p lambda_layer/python
+      - mv requirements.txt lambda_layer/
+      - pip install -r lambda_layer/requirements.txt -t lambda_layer/python
+  post_build:
+    commands:
+      - sam build --template-file template.yaml
+      - sam package --template-file .aws-sam/build/template.yaml --output-template-file package.yml --s3-bucket "${S3BucketName}"
+      - sam deploy --template-file package.yml --stack-name sam-app-stack --capabilities CAPABILITY_IAM
