@@ -1,0 +1,25 @@
+version: 0.2
+
+env:
+  variables:
+    # CloudFormation StackName
+    StackName: "sam-stack"
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+  pre_build:
+    commands:
+      - AccountID=$(aws sts get-caller-identity --query Account --output text)
+      - S3BucketName="${AccountID}-${StackName}-sam"
+  build:
+    commands:
+      - echo 'Nothing to do'
+  post_build:
+    commands:
+      - sam build --template-file template.yaml
+      - sam package --template-file .aws-sam/build/template.yaml --output-template-file package.yml --s3-bucket "${S3BucketName}"
+      - sam deploy --template-file package.yml --stack-name sam-app-stack --capabilities CAPABILITY_NAMED_IAM
+      # CAPABILITY_IAM => Allow CloudFormation to create IAM resources
+      # CAPABILITY_NAMED_IAM => Allow CloudFormation to create IAM resources with any name
+      # CAPABILITY_NAMED_IAM includes CAPABILITY_IAM

@@ -1,0 +1,13 @@
+{
+    "StartAt": "PassState1",
+    "States": {
+        "PassState1": {
+        "Type": "Pass",
+        "Next": "PassState2"
+        },
+        "PassState2": {
+        "Type": "Pass",
+        "End": true
+        }
+    }
+}
