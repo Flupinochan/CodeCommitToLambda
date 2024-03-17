@@ -1,5 +1,7 @@
 # Manage the Lambda code with CodeCommit
 
+[View more information](https://flupinochan.github.io/CodeCommitToLambda/)
+
 1. Create a CloudFormation Stack named `sam-stack` from `CloudFormation.yml`
 2. Store the code in `app_dir` and list the external libraries to install in `requirements.txt`
 3. Upload `app_dir`, `buildspec.yml`, `requirements.txt`,and `template.yaml` to CodeCommit
