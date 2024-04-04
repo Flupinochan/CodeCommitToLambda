@@ -1,5 +1,5 @@
 ---
-AWSTemplateFormatVersion : '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
 Resources:
@@ -11,7 +11,7 @@ Resources:
     Type: AWS::Serverless::LayerVersion
     Metadata:
       BuildMethod: python3.12
-      BuildArchitecture: x86_64
+      BuildArchitecture: x86_64 # CAPABILITY_NAMED_IAM
     Properties:
       LayerName: MyLayer
       Description: Layer description
